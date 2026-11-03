@@ -8,18 +8,17 @@ class Producto {
         this.stock = stock;
     }
 
-    // Valida la venta y actualiza el stock.
     vender(cantidad) {
         if (
-            Number.isInteger(cantidad) &&
             cantidad > 0 &&
+            cantidad % 1 === 0 &&
             cantidad <= this.stock
         ) {
             this.stock -= cantidad;
             return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 }
 
@@ -41,34 +40,53 @@ function listarProductos() {
     }
 }
 
-// Genera un ID nuevo sin repetir los existentes.
 function obtenerNuevoId() {
-    return Math.max(0, ...productos.map(producto => producto.id)) + 1;
+    let idMayor = 0;
+
+    for (let i = 0; i < productos.length; i++) {
+        if (productos[i].id > idMayor) {
+            idMayor = productos[i].id;
+        }
+    }
+
+    return idMayor + 1;
 }
 
 // Agrega un producto al final del inventario.
 function agregarProductoFinal() {
     const nombre = prompt("Nombre del producto:");
 
-    if (nombre === null || nombre.trim() === "") return;
+    if (nombre === null || nombre.trim() === "") {
+        return false;
+    }
 
     const entradaPrecio = prompt("Precio del producto:");
-    if (entradaPrecio === null) return;
+
+    if (entradaPrecio === null) {
+        return false;
+    }
 
     const categoria = prompt("Categoría del producto:");
-    if (categoria === null) return;
+
+    if (categoria === null || categoria.trim() === "") {
+        return false;
+    }
 
     const entradaStock = prompt("Stock del producto:");
-    if (entradaStock === null) return;
+
+    if (entradaStock === null || entradaStock.trim() === "") {
+        return false;
+    }
 
     const precio = Number(entradaPrecio);
     const stock = Number(entradaStock);
 
     if (
         categoria.trim() !== "" &&
-        Number.isFinite(precio) &&
+        !isNaN(precio) &&
         precio > 0 &&
-        Number.isInteger(stock) &&
+        !isNaN(stock) &&
+        stock % 1 === 0 &&
         stock >= 0
     ) {
         const nuevoProducto = new Producto(
@@ -90,24 +108,36 @@ function agregarProductoFinal() {
 function agregarProductoInicio() {
     const nombre = prompt("Nombre del producto:");
 
-    if (nombre === null || nombre.trim() === "") return;
+    if (nombre === null || nombre.trim() === "") {
+        return false;
+    }
 
     const entradaPrecio = prompt("Precio del producto:");
-    if (entradaPrecio === null) return;
+
+    if (entradaPrecio === null) {
+        return false;
+    }
 
     const categoria = prompt("Categoría del producto:");
-    if (categoria === null || categoria.trim() === "") return;
+
+    if (categoria === null || categoria.trim() === "") {
+        return false;
+    }
 
     const entradaStock = prompt("Stock del producto:");
-    if (entradaStock === null) return;
+
+    if (entradaStock === null || entradaStock.trim() === "") {
+        return false;
+    }
 
     const precio = Number(entradaPrecio);
     const stock = Number(entradaStock);
 
     if (
-        Number.isFinite(precio) &&
+        !isNaN(precio) &&
         precio > 0 &&
-        Number.isInteger(stock) &&
+        !isNaN(stock) &&
+        stock % 1 === 0 &&
         stock >= 0
     ) {
         const nuevoProducto = new Producto(
@@ -149,12 +179,21 @@ function eliminarPrimerProducto() {
 function buscarProducto() {
     const buscado = prompt("¿Qué producto deseas buscar?");
 
-    if (buscado === null || buscado.trim() === "") return;
+    if (buscado === null || buscado.trim() === "") {
+        return false;
+    }
 
-    const encontrado = productos.find(
-        producto =>
-            producto.nombre.toLowerCase() === buscado.trim().toLowerCase()
-    );
+    let encontrado = null;
+
+    for (let i = 0; i < productos.length; i++) {
+        if (
+            productos[i].nombre.toLowerCase() ===
+            buscado.trim().toLowerCase()
+        ) {
+            encontrado = productos[i];
+            break;
+        }
+    }
 
     if (encontrado) {
         console.log("Producto encontrado:", encontrado.nombre);
@@ -174,40 +213,62 @@ function reemplazarProducto() {
     if (
         productoAnterior === null ||
         productoAnterior.trim() === ""
-    ) return;
+    ) {
+        return false;
+    }
 
-    const posicion = productos.findIndex(
-        producto =>
-            producto.nombre.toLowerCase() ===
+    let posicion = -1;
+
+    for (let i = 0; i < productos.length; i++) {
+        if (
+            productos[i].nombre.toLowerCase() ===
             productoAnterior.trim().toLowerCase()
-    );
+        ) {
+            posicion = i;
+            break;
+        }
+    }
 
     if (posicion === -1) {
         console.log("El producto no existe en la lista.");
-        return;
+        return false;
     }
 
     const nombre = prompt("Nombre del nuevo producto:");
 
-    if (nombre === null || nombre.trim() === "") return;
+    if (nombre === null || nombre.trim() === "") {
+        return false;
+    }
 
     const entradaPrecio = prompt("Precio del nuevo producto:");
-    if (entradaPrecio === null) return;
+
+    if (entradaPrecio === null) {
+        return false;
+    }
+
 
     const categoria = prompt("Categoría del nuevo producto:");
-    if (categoria === null) return;
+
+    if (categoria === null || categoria.trim() === "") {
+        return false;
+    }
+
 
     const entradaStock = prompt("Stock del nuevo producto:");
-    if (entradaStock === null) return;
+
+    if (entradaStock === null || entradaStock.trim() === "") {
+        return false;
+    }
 
     const precio = Number(entradaPrecio);
     const stock = Number(entradaStock);
 
     if (
         categoria.trim() !== "" &&
-        Number.isFinite(precio) &&
+        !isNaN(precio) &&
         precio > 0 &&
-        Number.isInteger(stock) &&
+        !isNaN(stock) &&
+        stock % 1 === 0 &&
         stock >= 0
     ) {
         const productoNuevo = new Producto(
@@ -236,26 +297,38 @@ function venderProducto() {
     if (
         nombreBuscado === null ||
         nombreBuscado.trim() === ""
-    ) return;
+    ) {
+        return false;
+    }
 
-    const productoEncontrado = productos.find(
-        producto =>
-            producto.nombre.toLowerCase() ===
+
+    let productoEncontrado = null;
+
+    for (let i = 0; i < productos.length; i++) {
+        if (
+            productos[i].nombre.toLowerCase() ===
             nombreBuscado.trim().toLowerCase()
-    );
+        ) {
+            productoEncontrado = productos[i];
+            break;
+        }
+    }
 
     if (!productoEncontrado) {
         console.log("El producto no existe en la lista.");
-        return;
+        return false;
     }
+
 
     const entradaCantidad = prompt("¿Cuántas unidades deseas comprar?");
 
-    if (entradaCantidad === null) return;
+    if (entradaCantidad === null) {
+        return false;
+    }
 
     if (entradaCantidad.trim() === "") {
         console.log("Debes ingresar una cantidad.");
-        return;
+        return false;
     }
 
     const cantidad = Number(entradaCantidad);
@@ -282,65 +355,62 @@ function salir() {
 }
 
 // Menú principal.
-let opcion = "";
-
-while (opcion !== "9") {
-    opcion = prompt(
-        "SIMULADOR DE PRODUCTOS\n" +
-        "1. Listar productos\n" +
-        "2. Agregar producto al final\n" +
-        "3. Agregar producto al principio\n" +
-        "4. Eliminar último producto\n" +
-        "5. Eliminar primer producto\n" +
-        "6. Buscar producto\n" +
-        "7. Reemplazar producto\n" +
-        "8. Vender producto\n" +
-        "9. Salir\n\n" +
-        "Elige una opción:"
-    );
-
-    if (opcion === null) break;
-
-    switch (opcion) {
-        case "1":
-            listarProductos();
+function menu() {
+    let opcion = "";
+    while (opcion !== "9") {
+        opcion = prompt(
+            "SIMULADOR DE PRODUCTOS\n" +
+            "1. Listar productos\n" +
+            "2. Agregar producto al final\n" +
+            "3. Agregar producto al principio\n" +
+            "4. Eliminar último producto\n" +
+            "5. Eliminar primer producto\n" +
+            "6. Buscar producto\n" +
+            "7. Reemplazar producto\n" +
+            "8. Vender producto\n" +
+            "9. Salir\n\n" +
+            "Elige una opción:"
+        );
+        if (opcion === null) {
             break;
+        }
 
-        case "2":
-            agregarProductoFinal();
-            break;
-
-        case "3":
-            agregarProductoInicio();
-            break;
-
-        case "4":
-            eliminarUltimoProducto();
-            break;
-
-        case "5":
-            eliminarPrimerProducto();
-            break;
-
-        case "6":
-            buscarProducto();
-            break;
-
-        case "7":
-            reemplazarProducto();
-            break;
-
-        case "8":
-            venderProducto();
-            break;
-
-        case "9":
-            salir();
-            break;
-
-        default:
-            alert("Opción no válida. Intenta nuevamente.");
+        switch (opcion) {
+            case "1":
+                listarProductos();
+                break;
+            case "2":
+                agregarProductoFinal();
+                break;
+            case "3":
+                agregarProductoInicio();
+                break;
+            case "4":
+                eliminarUltimoProducto();
+                break;
+            case "5":
+                eliminarPrimerProducto();
+                break;
+            case "6":
+                buscarProducto();
+                break;
+            case "7":
+                reemplazarProducto();
+                break;
+            case "8":
+                venderProducto();
+                break;
+            case "9":
+                salir();
+                break;
+            default:
+                alert("Opción no válida. Intenta nuevamente.");
+        }
     }
 }
 
+function main() {
+    menu();
+}
 
+main();
