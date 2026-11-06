@@ -9,16 +9,20 @@ class Producto {
     }
 
     vender(cantidad) {
-        if (
-            cantidad > 0 &&
-            cantidad % 1 === 0 &&
-            cantidad <= this.stock
-        ) {
-            this.stock -= cantidad;
-            return true;
-        } else {
+        if (cantidad <= 0) {
             return false;
         }
+
+        if (cantidad % 1 !== 0) {
+            return false;
+        }
+
+        if (cantidad > this.stock) {
+            return false;
+        }
+
+        this.stock -= cantidad;
+        return true;
     }
 }
 
@@ -43,9 +47,9 @@ function listarProductos() {
 function obtenerNuevoId() {
     let idMayor = 0;
 
-    for (let i = 0; i < productos.length; i++) {
-        if (productos[i].id > idMayor) {
-            idMayor = productos[i].id;
+    for (const producto of productos) {
+        if (producto.id > idMayor) {
+            idMayor = producto.id;
         }
     }
 
@@ -81,28 +85,39 @@ function agregarProductoFinal() {
     const precio = Number(entradaPrecio);
     const stock = Number(entradaStock);
 
-    if (
-        categoria.trim() !== "" &&
-        !isNaN(precio) &&
-        precio > 0 &&
-        !isNaN(stock) &&
-        stock % 1 === 0 &&
-        stock >= 0
-    ) {
-        const nuevoProducto = new Producto(
-            obtenerNuevoId(),
-            nombre.trim(),
-            precio,
-            categoria.trim(),
-            stock
-        );
-
-        productos.push(nuevoProducto);
-        console.log("Producto agregado:", nuevoProducto);
-    } else {
-        console.log("Datos inválidos. No se agregó el producto.");
+    if (isNaN(precio)) {
+        console.log("El precio debe ser un número.");
+        return false;
     }
+
+    if (precio <= 0) {
+        console.log("El precio debe ser mayor que cero.");
+        return false;
+    }
+
+    if (isNaN(stock)) {
+        console.log("El stock debe ser un número.");
+        return false;
+    }
+
+    if (stock % 1 !== 0 || stock < 0) {
+        console.log("El stock debe ser un entero no negativo.");
+        return false;
+    }
+
+    const nuevoProducto = new Producto(
+        obtenerNuevoId(),
+        nombre.trim(),
+        precio,
+        categoria.trim(),
+        stock
+    );
+
+    productos.push(nuevoProducto);
+    console.log("Producto agregado:", nuevoProducto);
 }
+
+
 
 // Agrega un producto al principio del inventario.
 function agregarProductoInicio() {
@@ -133,27 +148,37 @@ function agregarProductoInicio() {
     const precio = Number(entradaPrecio);
     const stock = Number(entradaStock);
 
-    if (
-        !isNaN(precio) &&
-        precio > 0 &&
-        !isNaN(stock) &&
-        stock % 1 === 0 &&
-        stock >= 0
-    ) {
-        const nuevoProducto = new Producto(
-            obtenerNuevoId(),
-            nombre.trim(),
-            precio,
-            categoria.trim(),
-            stock
-        );
-
-        productos.unshift(nuevoProducto);
-        console.log("Producto agregado al principio:", nuevoProducto);
-    } else {
-        console.log("Precio o stock inválido. No se agregó el producto.");
+    if (isNaN(precio)) {
+        console.log("El precio debe ser un número.");
+        return false;
     }
+
+    if (precio <= 0) {
+        console.log("El precio debe ser mayor que cero.");
+        return false;
+    }
+
+    if (isNaN(stock)) {
+        console.log("El stock debe ser un número.");
+        return false;
+    }
+
+    if (stock % 1 !== 0 || stock < 0) {
+        console.log("El stock debe ser un entero no negativo.");
+        return false;
+    }
+    const nuevoProducto = new Producto(
+        obtenerNuevoId(),
+        nombre.trim(),
+        precio,
+        categoria.trim(),
+        stock
+    );
+
+    productos.unshift(nuevoProducto);
+    console.log("Producto agregado al principio:", nuevoProducto);
 }
+
 
 // Elimina el último producto.
 function eliminarUltimoProducto() {
@@ -185,12 +210,12 @@ function buscarProducto() {
 
     let encontrado = null;
 
-    for (let i = 0; i < productos.length; i++) {
+    for (const producto of productos) {
         if (
-            productos[i].nombre.toLowerCase() ===
+            producto.nombre.toLowerCase() ===
             buscado.trim().toLowerCase()
         ) {
-            encontrado = productos[i];
+            encontrado = producto;
             break;
         }
     }
@@ -218,15 +243,18 @@ function reemplazarProducto() {
     }
 
     let posicion = -1;
+    let indice = 0;
 
-    for (let i = 0; i < productos.length; i++) {
+    for (const producto of productos) {
         if (
-            productos[i].nombre.toLowerCase() ===
+            producto.nombre.toLowerCase() ===
             productoAnterior.trim().toLowerCase()
         ) {
-            posicion = i;
+            posicion = indice;
             break;
         }
+
+        indice++;
     }
 
     if (posicion === -1) {
@@ -263,32 +291,41 @@ function reemplazarProducto() {
     const precio = Number(entradaPrecio);
     const stock = Number(entradaStock);
 
-    if (
-        categoria.trim() !== "" &&
-        !isNaN(precio) &&
-        precio > 0 &&
-        !isNaN(stock) &&
-        stock % 1 === 0 &&
-        stock >= 0
-    ) {
-        const productoNuevo = new Producto(
-            productos[posicion].id,
-            nombre.trim(),
-            precio,
-            categoria.trim(),
-            stock
-        );
-
-        productos.splice(posicion, 1, productoNuevo);
-
-        console.log(
-            "Producto reemplazado correctamente:",
-            productoNuevo
-        );
-    } else {
-        console.log("Datos inválidos. No se reemplazó el producto.");
+    if (isNaN(precio)) {
+        console.log("El precio debe ser un número.");
+        return false;
     }
+
+    if (precio <= 0) {
+        console.log("El precio debe ser mayor que cero.");
+        return false;
+    }
+
+    if (isNaN(stock)) {
+        console.log("El stock debe ser un número.");
+        return false;
+    }
+
+    if (stock % 1 !== 0 || stock < 0) {
+        console.log("El stock debe ser un entero no negativo.");
+        return false;
+    }
+    const productoNuevo = new Producto(
+        productos[posicion].id,
+        nombre.trim(),
+        precio,
+        categoria.trim(),
+        stock
+    );
+
+    productos.splice(posicion, 1, productoNuevo);
+
+    console.log(
+        "Producto reemplazado correctamente:",
+        productoNuevo
+    );
 }
+
 
 // Procesa la venta de un producto.
 function venderProducto() {
@@ -304,12 +341,12 @@ function venderProducto() {
 
     let productoEncontrado = null;
 
-    for (let i = 0; i < productos.length; i++) {
+    for (const producto of productos) {
         if (
-            productos[i].nombre.toLowerCase() ===
+            producto.nombre.toLowerCase() ===
             nombreBuscado.trim().toLowerCase()
         ) {
-            productoEncontrado = productos[i];
+            productoEncontrado = producto;
             break;
         }
     }
@@ -355,62 +392,62 @@ function salir() {
 }
 
 // Menú principal.
-function menu() {
-    let opcion = "";
-    while (opcion !== "9") {
-        opcion = prompt(
-            "SIMULADOR DE PRODUCTOS\n" +
-            "1. Listar productos\n" +
-            "2. Agregar producto al final\n" +
-            "3. Agregar producto al principio\n" +
-            "4. Eliminar último producto\n" +
-            "5. Eliminar primer producto\n" +
-            "6. Buscar producto\n" +
-            "7. Reemplazar producto\n" +
-            "8. Vender producto\n" +
-            "9. Salir\n\n" +
-            "Elige una opción:"
-        );
-        if (opcion === null) {
-            break;
-        }
+// function menu() {
+let opcion = "";
+while (opcion !== "9") {
+    opcion = prompt(
+        "SIMULADOR DE PRODUCTOS\n" +
+        "1. Listar productos\n" +
+        "2. Agregar producto al final\n" +
+        "3. Agregar producto al principio\n" +
+        "4. Eliminar último producto\n" +
+        "5. Eliminar primer producto\n" +
+        "6. Buscar producto\n" +
+        "7. Reemplazar producto\n" +
+        "8. Vender producto\n" +
+        "9. Salir\n\n" +
+        "Elige una opción:"
+    );
+    if (opcion === null) {
+        break;
+    }
 
-        switch (opcion) {
-            case "1":
-                listarProductos();
-                break;
-            case "2":
-                agregarProductoFinal();
-                break;
-            case "3":
-                agregarProductoInicio();
-                break;
-            case "4":
-                eliminarUltimoProducto();
-                break;
-            case "5":
-                eliminarPrimerProducto();
-                break;
-            case "6":
-                buscarProducto();
-                break;
-            case "7":
-                reemplazarProducto();
-                break;
-            case "8":
-                venderProducto();
-                break;
-            case "9":
-                salir();
-                break;
-            default:
-                alert("Opción no válida. Intenta nuevamente.");
-        }
+    switch (opcion) {
+        case "1":
+            listarProductos();
+            break;
+        case "2":
+            agregarProductoFinal();
+            break;
+        case "3":
+            agregarProductoInicio();
+            break;
+        case "4":
+            eliminarUltimoProducto();
+            break;
+        case "5":
+            eliminarPrimerProducto();
+            break;
+        case "6":
+            buscarProducto();
+            break;
+        case "7":
+            reemplazarProducto();
+            break;
+        case "8":
+            venderProducto();
+            break;
+        case "9":
+            salir();
+            break;
+        default:
+            alert("Opción no válida. Intenta nuevamente.");
     }
 }
+// }
 
-function main() {
-    menu();
-}
+// function main() {
+//     menu();
+// }
 
-main();
+// main(); 
